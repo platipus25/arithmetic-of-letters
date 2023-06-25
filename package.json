@@ -1,0 +1,20 @@
+{
+  "name": "arithmetic-of-letters",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "platipus25",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "ohm generateBundles --withTypes --esm src/*.ohm && tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@ohm-js/cli": "^2.0.0",
+    "typescript": "^5.1.3",
+    "vite": "^4.3.9"
+  },
+  "dependencies": {
+    "ohm-js": "^17.1.0"
+  }
+}

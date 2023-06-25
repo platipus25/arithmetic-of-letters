@@ -1,0 +1,34 @@
+ArithmeticOfLetters {
+	Exp 
+  = ConcatExp
+    | CharExp
+      
+  ConcatExp
+    = Exp "||" CharExp
+  
+  CompoundExp
+    = XorExp
+    | AddExp 
+    | SubExp 
+    | PriExp
+  
+  CharExp 
+    = CompoundExp
+      | CharLiteral
+  
+  AddExp 
+    = CharExp "+" CharExp
+      
+  SubExp 
+    = CharExp "-" CharExp
+  
+  XorExp 
+    = CharExp "^" CharExp
+      
+  PriExp 
+    = "(" CompoundExp ")"
+      
+  CharLiteral
+    = any
+ 
+}
