@@ -1,8 +1,8 @@
 import grammar from './arithmeticofletters.ohm-bundle'
 
-const s = grammar.createSemantics()
+const semantics = grammar.createSemantics()
 
-s.addOperation('repr', {
+semantics.addOperation('repr', {
     ConcatExp(a, _, b) { return `concat(${a.repr()}, ${b.repr()})` },
     PriExp(_1, e, _2) { return e.repr() },
     AddExp(a, _, b) { return `add(${a.repr()}, ${b.repr()})` },
@@ -16,10 +16,7 @@ s.addOperation('repr', {
 //let charRenderingCanvas = new OffscreenCanvas(1000, 1000)
 let color = 0;
 
-type BitmapResult = { bitmap: ImageBitmap, width: number, height: number}
-
-
-s.addOperation<BitmapResult>('bitmap', {
+semantics.addOperation<ImageBitmap>('bitmap', {
     PriExp(_1, e, _2) { return e.bitmap() },
     ConcatExp(first, _, second) {
         let a = first.bitmap()
@@ -30,14 +27,10 @@ s.addOperation<BitmapResult>('bitmap', {
 
         const canvas = new OffscreenCanvas(width, height)
         const ctx = canvas.getContext('2d')!
-        ctx.drawImage(a.bitmap, 0, 0)
-        ctx.drawImage(b.bitmap, a.width, 0)
+        ctx.drawImage(a, 0, 0)
+        ctx.drawImage(b, a.width, 0)
 
-        return { 
-            bitmap: canvas.transferToImageBitmap(), 
-            width, 
-            height,
-        }
+        return canvas.transferToImageBitmap()
     },
     AddExp(first, _, second) { 
         let a = first.bitmap()
@@ -49,15 +42,11 @@ s.addOperation<BitmapResult>('bitmap', {
         const canvas = new OffscreenCanvas(width, height)
         const ctx = canvas.getContext('2d')!
         
-        ctx.drawImage(a.bitmap, 0, 0) // destination
+        ctx.drawImage(a, 0, 0) // destination
         ctx.globalCompositeOperation = "source-over";
-        ctx.drawImage(b.bitmap, 0, 0) // source
+        ctx.drawImage(b, 0, 0) // source
         
-        return {
-            bitmap: canvas.transferToImageBitmap(),
-            width,
-            height,
-        }
+        return canvas.transferToImageBitmap()
     },
     SubExp(first, _, second) {
         let a = first.bitmap()
@@ -69,15 +58,11 @@ s.addOperation<BitmapResult>('bitmap', {
         const canvas = new OffscreenCanvas(width, height)
         const ctx = canvas.getContext('2d')!
 
-        ctx.drawImage(a.bitmap, 0, 0) // destination
+        ctx.drawImage(a, 0, 0) // destination
         ctx.globalCompositeOperation = "destination-out";
-        ctx.drawImage(b.bitmap, 0, 0) // source
+        ctx.drawImage(b, 0, 0) // source
         
-        return {
-            bitmap: canvas.transferToImageBitmap(),
-            width,
-            height,
-        }
+        return canvas.transferToImageBitmap()
     },
     XorExp(first, _, second) {
         let a = first.bitmap()
@@ -89,15 +74,11 @@ s.addOperation<BitmapResult>('bitmap', {
         const canvas = new OffscreenCanvas(width, height)
         const ctx = canvas.getContext('2d')!
 
-        ctx.drawImage(a.bitmap, 0, 0) // destination
+        ctx.drawImage(a, 0, 0) // destination
         ctx.globalCompositeOperation = "xor";
-        ctx.drawImage(b.bitmap, 0, 0) // source
+        ctx.drawImage(b, 0, 0) // source
         
-        return {
-            bitmap: canvas.transferToImageBitmap(),
-            width,
-            height,
-        }
+        return canvas.transferToImageBitmap()
     },
     CharLiteral(_) {
         const font = "100px monospace";
@@ -120,33 +101,50 @@ s.addOperation<BitmapResult>('bitmap', {
 
         ctx.fillText(this.sourceString, 0, textMetrics.fontBoundingBoxAscent)
     
-        return {
-            bitmap: canvas.transferToImageBitmap(),
-            width,
-            height,
-        }
+        
+        return canvas.transferToImageBitmap()
     },
 })
 
 let result = grammar.match("(G - H) || (J ^ H) || (M + N) + (O + P)")
-let adapter = s(result)
+let adapter = semantics(result)
 
 console.log("HI")
 console.log(result, result.succeeded(), adapter.repr())
 
 document.addEventListener('DOMContentLoaded', async () => {
-    
-    const {bitmap, width, height} = adapter.bitmap();
+    await update(
+        document.getElementById("input")! as HTMLInputElement,
+        document.getElementById("output")! as HTMLImageElement,
+    )
+})
 
-    
-    let canvas = new OffscreenCanvas(width, height)
+async function render(text: string) : Promise<Blob> {
+    let result = grammar.match(text)
+    if (result.failed()) {
+        throw SyntaxError(`Failed to parse: ${result.message}`)
+    }
+    let adapter = semantics(result)
+    let bitmap = adapter.bitmap()
+    color = 0;
+
+    let canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
     let ctx = canvas.getContext('2d')!
     ctx.drawImage(bitmap, 0, 0)
     const blob = await canvas.convertToBlob()
-    const url = URL.createObjectURL(blob);   
-    console.log(url, canvas.width, canvas.height)
+    return blob
+}
 
-    canvas = document.getElementById("output")! as HTMLCanvasElement
-    ctx = canvas.getContext('2d')!;
-    ctx.drawImage(bitmap, 0, 0);
+async function update(input: HTMLInputElement, output: HTMLImageElement) {
+    await render(input.value).then((blob) => {
+        const url = URL.createObjectURL(blob);
+        output.src = url
+    }).catch((err) => console.error(err))
+}
+
+document.getElementById("input")?.addEventListener('input', async (event) => {
+    await update(
+        event.target! as HTMLInputElement,
+        document.getElementById('output')! as HTMLImageElement,
+    )
 })

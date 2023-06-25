@@ -5,13 +5,34 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + TS</title>
+    <style>
+      #app {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        font-family: sans-serif;
+        display: block;
+        text-align: center;
+      }
+
+      #input {
+        display: block;
+        font-size: 30px;
+      }
+
+      #output {
+        width: fit-content;
+      }
+    </style>
   </head>
   <body>
     <div id="app">
-        <!--<h1>Arithmetic of Letters</h1>
-        <input />-->
-        <canvas id="output" width="1000" height="1000" style="position:absolute; left:0; top:0; background-color: #aaa;"></canvas>
-        <!--<svg id="output"></svg>-->
+        <h1>Arithmetic of Letters</h1>
+        <img id="output" />
+        <input id="input" value="A + B"/>
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
