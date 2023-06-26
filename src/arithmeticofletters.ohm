@@ -1,34 +1,14 @@
 ArithmeticOfLetters {
-	Exp 
-  = ConcatExp
-    | CharExp
-      
-  ConcatExp
-    = Exp "||" CharExp
-  
-  CompoundExp
-    = XorExp
-    | AddExp 
-    | SubExp 
-    | PriExp
-  
-  CharExp 
-    = CompoundExp
-      | CharLiteral
-  
-  AddExp 
-    = CharExp "+" CharExp
-      
-  SubExp 
-    = CharExp "-" CharExp
-  
-  XorExp 
-    = CharExp "^" CharExp
-      
-  PriExp 
-    = "(" CompoundExp ")"
-      
-  CharLiteral
-    = any
- 
+  Expression
+    = Expression "||" Expression -- concat
+    | Expression "+" Char      -- add
+    | Expression "-" Char      -- sub
+    | Expression "&" Char      -- and
+    | Expression "|" Char      -- or
+    | Expression "^" Char      -- xor
+    | Char
+
+  Char
+    = "(" Expression ")"      -- paren
+    | any                     -- literal
 }
