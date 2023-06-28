@@ -1,14 +1,14 @@
 ArithmeticOfLetters {
-  Expression
-    = Expression "||" Expression -- concat
-    | Expression "+" Char      -- add
-    | Expression "-" Char      -- sub
-    | Expression "&" Char      -- and
-    | Expression "|" Char      -- or
-    | Expression "^" Char      -- xor
+  Expr
+    = Expr "||" Expr -- concat
+    | Expr "+" Char  -- add
+    | Expr "-" Char  -- sub
+    | Expr "&" Char  -- and
+    | Expr "|" Char  -- or
+    | Expr "^" Char  -- xor
     | Char
 
   Char
-    = "(" Expression ")"      -- paren
-    | any                     -- literal
+    = "(" Expr ")"   -- paren
+    | any            -- literal
 }

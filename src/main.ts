@@ -1,18 +1,16 @@
 import './styles.css'
 import grammar from './arithmeticofletters.ohm-bundle'
-import source from './arithmeticofletters.ohm?raw'
-
 
 const semantics = grammar.createSemantics()
 
 semantics.addOperation('repr', {
     Char_paren(_1, e, _2) { return e.repr() },
-    Expression_concat(a, _, b) { return `concat(${a.repr()}, ${b.repr()})` },
-    Expression_add(a, _, b) { return `add(${a.repr()}, ${b.repr()})` },
-    Expression_sub(a, _, b) { return `sub(${a.repr()}, ${b.repr()})` },
-    Expression_and(a, _, b) { return `and(${a.repr()}, ${b.repr()})` },
-    Expression_or(a, _, b) { return `or(${a.repr()}, ${b.repr()})` },
-    Expression_xor(a, _, b) { return `xor(${a.repr()}, ${b.repr()})` },
+    Expr_concat(a, _, b) { return `concat(${a.repr()}, ${b.repr()})` },
+    Expr_add(a, _, b) { return `add(${a.repr()}, ${b.repr()})` },
+    Expr_sub(a, _, b) { return `sub(${a.repr()}, ${b.repr()})` },
+    Expr_and(a, _, b) { return `and(${a.repr()}, ${b.repr()})` },
+    Expr_or(a, _, b) { return `or(${a.repr()}, ${b.repr()})` },
+    Expr_xor(a, _, b) { return `xor(${a.repr()}, ${b.repr()})` },
     Char_literal(_) {
         return `'${this.sourceString}'`
     },
@@ -20,12 +18,12 @@ semantics.addOperation('repr', {
 
 semantics.addOperation('pretty', {
     Char_paren(_1, e, _2) { return `(${e.pretty()})` },
-    Expression_concat(a, _, b) { return `${a.pretty()} || ${b.pretty()}` },
-    Expression_add(a, _, b) { return `${a.pretty()} + ${b.pretty()}` },
-    Expression_sub(a, _, b) { return `${a.pretty()} - ${b.pretty()}` },
-    Expression_and(a, _, b) { return `${a.pretty()} & ${b.pretty()}` },
-    Expression_or(a, _, b) { return `${a.pretty()} | ${b.pretty()}` },
-    Expression_xor(a, _, b) { return `${a.pretty()} ^ ${b.pretty()}` },
+    Expr_concat(a, _, b) { return `${a.pretty()} || ${b.pretty()}` },
+    Expr_add(a, _, b) { return `${a.pretty()} + ${b.pretty()}` },
+    Expr_sub(a, _, b) { return `${a.pretty()} - ${b.pretty()}` },
+    Expr_and(a, _, b) { return `${a.pretty()} & ${b.pretty()}` },
+    Expr_or(a, _, b) { return `${a.pretty()} | ${b.pretty()}` },
+    Expr_xor(a, _, b) { return `${a.pretty()} ^ ${b.pretty()}` },
     Char_literal(_) {
         return `${this.sourceString}`
     },
@@ -50,7 +48,7 @@ function CompositeChars(a: ImageBitmap, b: ImageBitmap, compositeOperation: Glob
 
 semantics.addOperation<ImageBitmap>('bitmap', {
     Char_paren(_1, e, _2) { return e.bitmap() },
-    Expression_concat(first, _, second) {
+    Expr_concat(first, _, second) {
         let a = first.bitmap()
         let b = second.bitmap()
 
@@ -64,19 +62,19 @@ semantics.addOperation<ImageBitmap>('bitmap', {
 
         return canvas.transferToImageBitmap()
     },
-    Expression_add(a, _, b) { 
+    Expr_add(a, _, b) { 
         return CompositeChars(a.bitmap(), b.bitmap(), "source-over");
     },
-    Expression_sub(a, _, b) {
+    Expr_sub(a, _, b) {
         return CompositeChars(a.bitmap(), b.bitmap(), "destination-out");
     },
-    Expression_and(a, _, b) {
+    Expr_and(a, _, b) {
         return CompositeChars(a.bitmap(), b.bitmap(), "source-in");
     },
-    Expression_or(a, _, b) {
+    Expr_or(a, _, b) {
         return CompositeChars(a.bitmap(), b.bitmap(), "source-over");
     },
-    Expression_xor(a, _, b) {
+    Expr_xor(a, _, b) {
         return CompositeChars(a.bitmap(), b.bitmap(), "xor");
     },
     Char_literal(_) {
@@ -109,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("output")! as HTMLImageElement,
     )
 
-    document.getElementById('source')!.innerText = source//grammar.source.sourceString
+    document.getElementById('source')!.innerText = grammar.source.sourceString
 })
 
 async function update(input: HTMLInputElement, output: HTMLImageElement) {
@@ -119,9 +117,6 @@ async function update(input: HTMLInputElement, output: HTMLImageElement) {
         return
     }
     let adapter = semantics(result)  
-
-    let pretty = adapter.pretty()
-    //input.value = pretty;
     
     let bitmap = adapter.bitmap()
     color = 0;
