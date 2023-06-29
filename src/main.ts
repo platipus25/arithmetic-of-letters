@@ -103,6 +103,8 @@ semantics.addOperation<ImageBitmap>('bitmap', {
 })
 
 document.addEventListener('DOMContentLoaded', async () => {
+    document.getElementById('source')!.innerText = (grammar as any).source.sourceString
+
     const fontFace = new FontFace("roboto", `url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2)`);
     document.fonts.add(await fontFace.load())
 
@@ -110,8 +112,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById("input")! as HTMLInputElement,
         document.getElementById("output")! as HTMLImageElement,
     )
-
-    document.getElementById('source')!.innerText = grammar.source.sourceString
 })
 
 async function update(input: HTMLInputElement, output: HTMLImageElement) {
