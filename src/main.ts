@@ -125,8 +125,7 @@ async function update(input: HTMLInputElement, output: HTMLImageElement) {
     let bitmap = adapter.bitmap()
 
     let canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
-    let ctx = canvas.getContext('2d')!
-    ctx.drawImage(bitmap, 0, 0)
+    canvas.getContext('bitmaprenderer')?.transferFromImageBitmap(bitmap)
     const blob = await canvas.convertToBlob()
     const url = URL.createObjectURL(blob);
     output.src = url
