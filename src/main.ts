@@ -29,7 +29,7 @@ semantics.addOperation('pretty', {
     },
 })
 
-let color = 0;
+let hue: number = 0;
 let font = "100px roboto";
 
 function CompositeChars(a: ImageBitmap, b: ImageBitmap, compositeOperation: GlobalCompositeOperation) {
@@ -51,6 +51,7 @@ semantics.addOperation<ImageBitmap>('bitmap', {
     Expr_concat(first, _, second) {
         let a = first.bitmap()
         let b = second.bitmap()
+        hue = 0;
 
         let width = a.width + b.width;
         let height = Math.max(a.height, b.height);
@@ -91,8 +92,8 @@ semantics.addOperation<ImageBitmap>('bitmap', {
         ctx = canvas.getContext('2d')! 
     
         ctx.font = font;
-        ctx.fillStyle = `hsl(${color % 360.0}, 100%, 60%)`
-        color += 80.0
+        ctx.fillStyle = `hsl(${hue % 360}, 100%, 60%)`
+        hue += 80.0
 
         ctx.fillText(this.sourceString, 0, textMetrics.fontBoundingBoxAscent)
     
@@ -122,7 +123,6 @@ async function update(input: HTMLInputElement, output: HTMLImageElement) {
     let adapter = semantics(result)  
     
     let bitmap = adapter.bitmap()
-    color = 0;
 
     let canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
     let ctx = canvas.getContext('2d')!
