@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "ohm generateBundles --withTypes --esm src/*.ohm && tsc --noEmit || vite build",
+    "build": "ohm generateBundles --withTypes --esm src/*.ohm && tsc --noEmit; vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
