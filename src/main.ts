@@ -102,6 +102,9 @@ semantics.addOperation<ImageBitmap>('bitmap', {
 })
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const fontFace = new FontFace("roboto", `url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2)`);
+    document.fonts.add(await fontFace.load())
+
     await update(
         document.getElementById("input")! as HTMLInputElement,
         document.getElementById("output")! as HTMLImageElement,
