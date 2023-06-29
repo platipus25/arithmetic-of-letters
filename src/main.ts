@@ -3,27 +3,27 @@ import grammar from './arithmeticofletters.ohm-bundle'
 
 const semantics = grammar.createSemantics()
 
-semantics.addOperation('repr', {
-    Char_paren(_1, e, _2) { return e.repr() },
-    Expr_concat(a, _, b) { return `concat(${a.repr()}, ${b.repr()})` },
-    Expr_add(a, _, b) { return `add(${a.repr()}, ${b.repr()})` },
-    Expr_sub(a, _, b) { return `sub(${a.repr()}, ${b.repr()})` },
-    Expr_and(a, _, b) { return `and(${a.repr()}, ${b.repr()})` },
-    Expr_or(a, _, b) { return `or(${a.repr()}, ${b.repr()})` },
-    Expr_xor(a, _, b) { return `xor(${a.repr()}, ${b.repr()})` },
+semantics.addAttribute('repr', {
+    Char_paren(_1, e, _2) { return e.repr },
+    Expr_concat(a, _, b) { return `concat(${a.repr}, ${b.repr})` },
+    Expr_add(a, _, b) { return `add(${a.repr}, ${b.repr})` },
+    Expr_sub(a, _, b) { return `sub(${a.repr}, ${b.repr})` },
+    Expr_and(a, _, b) { return `and(${a.repr}, ${b.repr})` },
+    Expr_or(a, _, b) { return `or(${a.repr}, ${b.repr})` },
+    Expr_xor(a, _, b) { return `xor(${a.repr}, ${b.repr})` },
     Char_literal(_) {
         return `'${this.sourceString}'`
     },
 })
 
-semantics.addOperation('pretty', {
-    Char_paren(_1, e, _2) { return `(${e.pretty()})` },
-    Expr_concat(a, _, b) { return `${a.pretty()} || ${b.pretty()}` },
-    Expr_add(a, _, b) { return `${a.pretty()} + ${b.pretty()}` },
-    Expr_sub(a, _, b) { return `${a.pretty()} - ${b.pretty()}` },
-    Expr_and(a, _, b) { return `${a.pretty()} & ${b.pretty()}` },
-    Expr_or(a, _, b) { return `${a.pretty()} | ${b.pretty()}` },
-    Expr_xor(a, _, b) { return `${a.pretty()} ^ ${b.pretty()}` },
+semantics.addAttribute('pretty', {
+    Char_paren(_1, e, _2) { return `(${e.pretty})` },
+    Expr_concat(a, _, b) { return `${a.pretty} || ${b.pretty}` },
+    Expr_add(a, _, b) { return `${a.pretty} + ${b.pretty}` },
+    Expr_sub(a, _, b) { return `${a.pretty} - ${b.pretty}` },
+    Expr_and(a, _, b) { return `${a.pretty} & ${b.pretty}` },
+    Expr_or(a, _, b) { return `${a.pretty} | ${b.pretty}` },
+    Expr_xor(a, _, b) { return `${a.pretty} ^ ${b.pretty}` },
     Char_literal(_) {
         return `${this.sourceString}`
     },
