@@ -1,34 +1,34 @@
 #app {
-width: 100%;
-display: flex;
-flex-direction: column;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 h1 {
-font-family: sans-serif;
-display: block;
-text-align: center;
+    font-family: sans-serif;
+    display: block;
+    text-align: center;
 }
 
-#input {
-display: block;
-font-size: 30px;
+.input {
+    display: block;
+    font-size: 30px;
 }
 
-#output {
-width: fit-content;
-min-height: 120px;
-align-self: center;
+.output {
+    width: fit-content;
+    min-height: 120px;
+    align-self: center;
 }
 
-#info {
-
+.error {
+    color: red;
 }
 
-pre {
-/*box-shadow: #eee 2px 2px 5px;*/
-}
+/*.info {
+    color: blue;
+}*/
 
 @media (min-width: 768px) {
-    
+   
 }

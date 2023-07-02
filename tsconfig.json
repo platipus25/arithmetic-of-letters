@@ -5,6 +5,10 @@
       "module": "ESNext",
       "lib": ["ES2020", "DOM", "DOM.Iterable"],
       "skipLibCheck": true,
+
+      /* Support components */
+      "jsx": "preserve",
+      "jsxImportSource": "solid-js",
   
       /* Bundler mode */
       "moduleResolution": "bundler",

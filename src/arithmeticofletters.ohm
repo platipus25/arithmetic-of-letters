@@ -1,14 +1,17 @@
 ArithmeticOfLetters {
-  Expr
+  Expr (an expression)
+    = BinaryOperator
+    | Char
+
+  BinaryOperator (a binary operator)
     = Expr "||" Expr -- concat
     | Expr "+" Char  -- add
     | Expr "-" Char  -- sub
     | Expr "&" Char  -- and
     | Expr "|" Char  -- or
     | Expr "^" Char  -- xor
-    | Char
 
-  Char
+  Char (a character)
     = "(" Expr ")"   -- paren
     | any            -- literal
 }

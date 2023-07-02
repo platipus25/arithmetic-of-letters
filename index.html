@@ -10,29 +10,13 @@
     <meta property="og:image" content="https://arithmetic-of-letters.vercel.app/banner.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="800" />
-    <meta property="og:description" content="Use all your favorite binary operators on all your favorite letters.
-Arithmetic of Letters is a miniscule typesetting language in the style of bitwise arithmetic." />
+    <meta property="og:description" content="A miniscule typesetting language in the style of bitwise arithmetic." />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   </head>
   <body>
-    <div id="app">
-        <h1>Arithmetic of Letters</h1>
-        <img id="output" />
-        <input id="input" value="A + B || 8 & 0 || G - K"/>
-        <pre id="info">
-|| concat
-+  add
--  subtract
-&  and
-|  or
-^  xor
-() parentheses
-any unicode character
-</pre>
-<pre id="source"></pre>
-    </div>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="app"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
