@@ -1,4 +1,5 @@
 import grammar from './arithmeticofletters.ohm-bundle'
+import Color from 'colorjs.io'
 
 const semantics = grammar.createSemantics()
 
@@ -28,8 +29,7 @@ semantics.addAttribute('pretty', {
     },
 })
 
-let hue: number = 0;
-let font = "100px roboto";
+let color: Color = new Color('hsl(0 100% 60%)')
 
 function CompositeChars(a: ImageBitmap, b: ImageBitmap, compositeOperation: GlobalCompositeOperation) {
     let width = Math.max(a.width, b.width);
@@ -45,12 +45,15 @@ function CompositeChars(a: ImageBitmap, b: ImageBitmap, compositeOperation: Glob
     return canvas.transferToImageBitmap()
 }
 
-semantics.addOperation<ImageBitmap>('bitmap', {
-    Char_paren(_1, e, _2) { return e.bitmap() },
+semantics.addOperation<ImageBitmap>('bitmap(font)', {
+    Entry(e) {
+      color.hsl.h = 0;
+      return e.bitmap(this.args.font)
+    },
+    Char_paren(_1, e, _2) { return e.bitmap(this.args.font) },
     BinaryOperator_concat(first, _, second) {
-        let a = first.bitmap()
-        let b = second.bitmap()
-        hue = 0;
+        let a = first.bitmap(this.args.font)
+        let b = second.bitmap(this.args.font)
 
         let width = a.width + b.width;
         let height = Math.max(a.height, b.height);
@@ -63,25 +66,25 @@ semantics.addOperation<ImageBitmap>('bitmap', {
         return canvas.transferToImageBitmap()
     },
     BinaryOperator_add(a, _, b) { 
-        return CompositeChars(a.bitmap(), b.bitmap(), "source-over");
+        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "source-over");
     },
     BinaryOperator_sub(a, _, b) {
-        return CompositeChars(a.bitmap(), b.bitmap(), "destination-out");
+        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "destination-out");
     },
     BinaryOperator_and(a, _, b) {
-        return CompositeChars(a.bitmap(), b.bitmap(), "source-in");
+        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "source-in");
     },
     BinaryOperator_or(a, _, b) {
-        return CompositeChars(a.bitmap(), b.bitmap(), "source-over");
+        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "source-over");
     },
     BinaryOperator_xor(a, _, b) {
-        return CompositeChars(a.bitmap(), b.bitmap(), "xor");
+        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "xor");
     },
     Char_literal(_) {
         let canvas = new OffscreenCanvas(100, 100);
         let ctx = canvas.getContext('2d')! 
 
-        ctx.font = font;
+        ctx.font = this.args.font;
         const textMetrics = ctx.measureText(this.sourceString);
 
         let width = textMetrics.width;
@@ -90,9 +93,10 @@ semantics.addOperation<ImageBitmap>('bitmap', {
         canvas = new OffscreenCanvas(width, height);
         ctx = canvas.getContext('2d')! 
     
-        ctx.font = font;
-        ctx.fillStyle = `hsl(${hue % 360}, 100%, 60%)`
-        hue += 80.0
+        ctx.font = this.args.font;
+         ctx.fillStyle = color.to('hsl').toString()
+        color.hsl.h += 70.0
+        color.hsl.h %= 360
 
         ctx.fillText(this.sourceString, 0, textMetrics.fontBoundingBoxAscent)
     

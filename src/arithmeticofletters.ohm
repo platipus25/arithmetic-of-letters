@@ -1,4 +1,6 @@
 ArithmeticOfLetters {
+  Entry = Expr
+
   Expr (an expression)
     = BinaryOperator
     | Char
