@@ -1,17 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    fontFamily: { 
-      'display': ['Roboto', 'sans-serif']
+    fontFamily: {
+      display: ["Roboto", "sans-serif"],
     },
     extend: {},
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-  ],
-}
-
+  plugins: [require("@tailwindcss/forms")],
+};

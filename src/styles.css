@@ -3,39 +3,39 @@
 @tailwind utilities;
 
 #app {
-    width: 100%;
-    display: grid;
-    /*display: flex;
+  width: 100%;
+  display: grid;
+  /*display: flex;
     flex-direction: column;*/
-    /*grid-template:  "b a a"
+  /*grid-template:  "b a a"
                     "b a a"
                     "a a a";*/
-    /*position: relative;*/
+  /*position: relative;*/
 }
 
 h1 {
-    font-family: sans-serif;
-    display: block;
-    text-align: center;
+  font-family: sans-serif;
+  display: block;
+  text-align: center;
 }
 
 .input {
-    display: block;
-    font-size: 30px;
-    justify-self: stretch;
-    /*position: absolute;
+  display: block;
+  font-size: 30px;
+  justify-self: stretch;
+  /*position: absolute;
     bottom: 0;
     left: 0;
     right: 0;*/
 }
 
 .output {
-    height: 120px;
-    justify-self: center;
+  height: 120px;
+  justify-self: center;
 }
 
 .error {
-    color: red;
+  color: red;
 }
 
 /*.info {
@@ -43,5 +43,4 @@ h1 {
 }*/
 
 @media (min-width: 768px) {
-   
 }
