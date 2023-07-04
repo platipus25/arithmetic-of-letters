@@ -6,7 +6,7 @@ import { MatchResult } from 'ohm-js';
 
 const DEFAULT_EXPRESSION = "A + B || 8 & 0 || G - K";
 
-export function ExpressionRenderer(props: { match: MatchResult, fontSize: string, fontFamily: string, class: string} ) {
+function ExpressionRenderer(props: { match: MatchResult, fontSize: string, fontFamily: string, class: string} ) {
     const [ renderedImage, setRenderedImage ] = createSignal("")
 
     createEffect(async () => {
@@ -27,6 +27,16 @@ export function ExpressionRenderer(props: { match: MatchResult, fontSize: string
     return <a href={renderedImage()} class="contents" download><img class={props.class} src={renderedImage()} /></a>
 }
 
+function Input(props: any) {
+    return  <div class="flex p-0 border-0 border-b-4 text-gray-900 border-gray-400  focus-within:border-indigo-400 focus:ring-inset sm:leading-6">
+        <input
+            {...props}
+            type="text"
+            class="block border-0 my-0 w-full focus:ring-0 mx-2 px-1 py-0.5 text-lg border-t border-t-gray-300 justify-center placeholder:text-gray-400 focus:border-t-gray-300"
+        />
+    </div>
+}
+
 const App = () => {
     const [text, setText] = createSignal(DEFAULT_EXPRESSION);
     const [fontSize, setFontSize] = createSignal(300);
@@ -39,31 +49,44 @@ const App = () => {
         console.warn(match().message)
     })
   
-    return <>
-        <div class="grid relative mt-2 rounded-md">
+    return <div class="grid relative">
+        <div id="headerbox" class="left-0 right-0 top-0 p-2 bg-gray-800">
+            <h1 class="text-2xl font-display text-gray-100">Arithmetic of Letters</h1>
+        </div>
+
+        <div id="displaybox" class="grid notsticky top-0 justify-center">
             <ExpressionRenderer
                 fontFamily='roboto'
                 fontSize={`${fontSize()}px`}
                 match={match()}
-                class="h-60 justify-self-center hover:drop-shadow"
+                class="h-60 justify-self-center hover:drop-shadow" 
             />
-            <input
-                type="text"
-                name="expression"
-                class="block rounded-md border-0 py-1.5 text-gray-900 text-xl ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:leading-6"
+            <Show when={match().failed()}>
+                <pre class="text-rose-500 mx-2">{match().message}</pre>
+            </Show>
+        </div>
+        
+        <div id="inputbox" class="fixed bottom-2 left-2 right-2 ">
+            <Input 
                 oninput={(e) => setText(e.currentTarget.value)}
                 value={text()}
+                name="expression"
+                placeholder='expression'
             />
-            <label for="fontsize">Font Size</label>
+        </div>
+    
+        <div id="controlsbox" class="grid px-4 py-2">
+            <label for="fontsize" class="m-1">Font Size</label>
             <input name="fontsize" type="range" min="2" max="1000"
                 oninput={(e) => setFontSize(parseInt(e.currentTarget.value))} 
                 value={fontSize()}
             />
-            <Show when={match().failed()}>
-                <pre class="error">{match().message}</pre>
-            </Show>
+            <label for="fontfamily" class="m-1">Font Family (Coming Soon)</label>
+            <label for="colorstrategy" class="m-1">Color Palette (Coming Soon)</label>
         </div>
-        <pre>{`
+        
+        <div id="infobox" class="px-4 py-2">
+            <pre>{`
 || concat
 +  add
 -  subtract
@@ -73,11 +96,13 @@ const App = () => {
 () parentheses
 any unicode character
 `}</pre>
+            <pre>
+                {(grammar as any).source.sourceString}
+            </pre>
+        </div>
 
-        <pre>
-            {(grammar as any).source.sourceString}
-        </pre>
-    </>
+        <div id="footerbox" class="pb-14"></div>
+    </div>
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
