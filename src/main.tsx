@@ -116,6 +116,7 @@ const App = () => {
             Font Size
           </label>
           <input
+            id="fontsize"
             name="fontsize"
             type="range"
             min="2"
@@ -135,7 +136,10 @@ const App = () => {
           id="infobox"
           class="flex flex-col gap-2 px-4 py-2 overflow-y-scroll"
         >
-          <pre>{`
+          <label for="reference" class="m-1">
+            Syntax Reference
+          </label>
+          <pre id="reference" class="m-1">{`
 || concat
 +  add
 -  subtract
@@ -145,9 +149,10 @@ const App = () => {
 () parentheses
 any unicode character
 `}</pre>
-          <pre class="overflow-x-scroll">
+          {/*<label for="grammar">Grammar Definition</label>
+          <pre id="grammar" class="overflow-x-scroll">
             {(grammar as any).source.sourceString}
-          </pre>
+          </pre>*/}
         </div>
       </div>
 
