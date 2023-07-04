@@ -75,10 +75,10 @@ const App = () => {
   });
 
   return (
-    <div class="grid relative auto-cols-auto auto-rows-max md:grid-flow-col md:grid-cols-3 dark:bg-neutral-700">
+    <div class="grid relative auto-cols-auto md:grid-flow-col md:grid-cols-3 dark:bg-neutral-700 grid-rows-min-content">
       <div
         id="headerbox"
-        class="col-span-full left-0 right-0 top-0 p-2 bg-gray-300 dark:bg-neutral-900"
+        class="col-span-full left-0 right-0 top-0 p-2 bg-gray-300 dark:bg-neutral-900 max-h-fit"
       >
         <h1 class="text-2xl font-display text-black dark:text-gray-300">
           Arithmetic of Letters
@@ -89,12 +89,12 @@ const App = () => {
         id="displaybox"
         class="grid md:col-span-2 md:col-start-2 grid-flow-row md:grid-rows-3 grid-cols-1 place-items-center"
       >
-        <div id="expressionbox" class="overflow-scroll">
+        <div id="expressionbox" class="overflow-scroll max-w-full">
           <ExpressionRenderer
             fontFamily="roboto"
             fontSize={`${fontSize()}px`}
             match={match()}
-            class="h-60 justify-self-center hover:drop-shadow m-auto min-w-min"
+            class="h-60 justify-self-center hover:drop-shadow m-auto max-w-fit"
           />
         </div>
         <pre class="text-rose-500 mx-2 order-3 md:order-2">

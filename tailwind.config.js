@@ -5,7 +5,11 @@ module.exports = {
     fontFamily: {
       display: ["Roboto", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      gridTemplateRows: {
+        "min-content": "min-content",
+      },
+    },
   },
   plugins: [require("@tailwindcss/forms")],
 };
