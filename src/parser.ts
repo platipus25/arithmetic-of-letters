@@ -1,7 +1,24 @@
-import grammar from "./arithmeticofletters.ohm-bundle";
+import grammar, {
+  ArithmeticOfLettersSemantics,
+} from "./arithmeticofletters.ohm-bundle";
+import { MatchResult } from "ohm-js";
 import Color from "colorjs.io";
+import { ColorStrategy } from "./colors";
 
-const semantics = grammar.createSemantics();
+const semantics = grammar.createSemantics() as ParserSemantics;
+
+interface ParserSemantics extends ArithmeticOfLettersSemantics {
+  (match: MatchResult): ParserAdapter;
+}
+
+// Apply the correct types to the adapter that the semantics object creates from a MatchResult
+interface ParserAdapter {
+  repr: string;
+  pretty: string;
+  bitmap(font: string, colorStrategy: ColorStrategy): ImageBitmap;
+
+  [index: string]: any;
+}
 
 semantics.addAttribute("repr", {
   Char_paren(_1, e, _2) {
@@ -56,26 +73,6 @@ semantics.addAttribute("pretty", {
     return `${this.sourceString}`;
   },
 });
-
-export type ColorStrategy = Generator<Color>;
-
-export function* DefaultColorStrategy(): ColorStrategy {
-  let color: Color = new Color("hsl(0 100% 60%)");
-
-  while (true) {
-    yield color;
-    color.hsl.h += 70.0;
-    color.hsl.h %= 360;
-  }
-}
-
-export function* ColorPaletteStrategy(palette: [Color]): ColorStrategy {
-  while (true) {
-    for (const color of palette) {
-      yield color;
-    }
-  }
-}
 
 function CompositeChars(
   a: ImageBitmap,
@@ -177,3 +174,4 @@ semantics.addOperation<ImageBitmap>("bitmap(font, colorStrategy)", {
 });
 
 export { grammar, semantics };
+export { DefaultColorStrategy } from "./colors";

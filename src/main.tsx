@@ -1,15 +1,54 @@
 import "./styles.css";
-import { grammar, semantics, DefaultColorStrategy } from "./parser";
-import { createSignal, createMemo, createEffect, Show } from "solid-js";
+import { grammar, semantics } from "./parser";
+import { createSignal, createMemo, createEffect, For } from "solid-js";
 import { render } from "solid-js/web";
 import { MatchResult } from "ohm-js";
+import {
+  Color,
+  DefaultColorStrategy,
+  UniformColorStrategy,
+  LchWheelStrategy,
+  ColorStrategy,
+} from "./colors";
 
 const DEFAULT_EXPRESSION = "A + B || 8 & 0 || G - K";
+
+export const colorStrategies = [
+  {
+    name: "Default",
+    strategy: () => {
+      return DefaultColorStrategy();
+    },
+  },
+  {
+    name: "Black",
+    strategy: () => UniformColorStrategy(new Color("black")),
+  },
+  {
+    name: "Pastel",
+    strategy: () => {
+      return LchWheelStrategy(new Color("lch(75 70 0)"), 95);
+    },
+  },
+  {
+    name: "Rainbow",
+    strategy: () => {
+      return LchWheelStrategy(new Color("lch(60 70 0)"), 10);
+    },
+  },
+  {
+    name: "Glass",
+    strategy: () => {
+      return LchWheelStrategy(new Color("lch(60 70 0 / 0.5)"), 95);
+    },
+  },
+];
 
 function ExpressionRenderer(props: {
   match: MatchResult;
   fontSize: string;
   fontFamily: string;
+  colorStrategy: () => ColorStrategy;
   class: string;
 }) {
   const [renderedImage, setRenderedImage] = createSignal("");
@@ -22,7 +61,7 @@ function ExpressionRenderer(props: {
     }
 
     const adapter = semantics(props.match);
-    const bitmap = adapter.bitmap(font(), DefaultColorStrategy());
+    const bitmap = adapter.bitmap(font(), props.colorStrategy());
 
     const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
     canvas.getContext("bitmaprenderer")?.transferFromImageBitmap(bitmap);
@@ -43,6 +82,7 @@ function ExpressionRenderer(props: {
 const App = () => {
   const [text, setText] = createSignal(DEFAULT_EXPRESSION);
   const [fontSize, setFontSize] = createSignal(300);
+  const [colorStrategy, setColorStrategy] = createSignal(DefaultColorStrategy);
 
   const match = createMemo(() => grammar.match(text()));
 
@@ -81,6 +121,7 @@ const App = () => {
           <ExpressionRenderer
             fontFamily="roboto"
             fontSize={`${fontSize()}px`}
+            colorStrategy={colorStrategy()}
             match={match()}
             class="h-60 justify-self-center hover:drop-shadow m-auto max-w-fit min-w-full"
           />
@@ -111,8 +152,8 @@ const App = () => {
         id="sidebar"
         class="md:bg-gray-200 md:dark:bg-neutral-800 col-start-1 md:row-start-2 row-span-1 md:drop-shadow-md dark:text-gray-200"
       >
-        <div id="controlsbox" class="grid px-4 py-2">
-          <label for="fontsize" class="m-1">
+        <div id="controlsbox" class="grid px-4 py-2 gap-2">
+          <label for="fontsize" class="">
             Font Size
           </label>
           <input
@@ -124,11 +165,27 @@ const App = () => {
             oninput={(e) => setFontSize(parseInt(e.currentTarget.value))}
             value={fontSize()}
           />
-          <label for="fontfamily" class="m-1">
-            Font Family (Coming Soon)
+          <label for="colorstrategy" class="">
+            Color Palette
           </label>
-          <label for="colorstrategy" class="m-1">
-            Color Palette (Coming Soon)
+          <select
+            name="colorpalette"
+            id="colorstrategy"
+            class="dark:bg-inherit"
+            oninput={(e) => {
+              const index = e.currentTarget.selectedIndex;
+              const strategy = colorStrategies[index];
+              if (strategy != undefined) {
+                setColorStrategy(() => strategy.strategy);
+              }
+            }}
+          >
+            <For each={colorStrategies}>
+              {(item, i) => <option value={`${i}`}>{item.name}</option>}
+            </For>
+          </select>
+          <label for="fontfamily" class="">
+            Font Family (Coming Soon)
           </label>
         </div>
 
