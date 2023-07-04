@@ -154,7 +154,7 @@ const App = () => {
       >
         <div id="controlsbox" class="grid px-4 py-2 gap-2">
           <label for="fontsize" class="">
-            Font Size
+            Render Quality
           </label>
           <input
             id="fontsize"
