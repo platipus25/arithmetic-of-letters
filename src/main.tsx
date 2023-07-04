@@ -94,7 +94,7 @@ const App = () => {
             fontFamily="roboto"
             fontSize={`${fontSize()}px`}
             match={match()}
-            class="h-60 justify-self-center hover:drop-shadow m-auto max-w-fit"
+            class="h-60 justify-self-center hover:drop-shadow m-auto max-w-fit min-w-full"
           />
         </div>
         <pre class="text-rose-500 mx-2 order-3 md:order-2">
