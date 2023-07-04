@@ -1,5 +1,5 @@
 import './styles.css'
-import { grammar, semantics } from './parser';
+import { grammar, semantics, DefaultColorStrategy } from './parser';
 import { createSignal, createMemo, createEffect, Show } from "solid-js";
 import { render } from "solid-js/web";
 import { MatchResult } from 'ohm-js';
@@ -9,11 +9,13 @@ const DEFAULT_EXPRESSION = "A + B || 8 & 0 || G - K";
 function ExpressionRenderer(props: { match: MatchResult, fontSize: string, fontFamily: string, class: string} ) {
     const [ renderedImage, setRenderedImage ] = createSignal("")
 
+    const font = () => `${props.fontSize} ${props.fontFamily}, sans-serif`
+
     createEffect(async () => {
         if (props.match.failed()) { return }
 
         const adapter = semantics(props.match)
-        const bitmap = adapter.bitmap(`${props.fontSize} ${props.fontFamily}, sans-serif`)
+        const bitmap = adapter.bitmap(font(), DefaultColorStrategy())
     
         const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
         canvas.getContext('bitmaprenderer')?.transferFromImageBitmap(bitmap)

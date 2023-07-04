@@ -29,7 +29,26 @@ semantics.addAttribute('pretty', {
     },
 })
 
-let color: Color = new Color('hsl(0 100% 60%)')
+
+export type ColorStrategy = Generator<Color>
+
+export function *DefaultColorStrategy(): ColorStrategy {
+    let color: Color = new Color('hsl(0 100% 60%)')
+
+    while (true) {
+        yield color
+        color.hsl.h += 70.0
+        color.hsl.h %= 360
+    }
+}
+
+export function *ColorPaletteStrategy(palette: [Color]): ColorStrategy {
+    while (true) {
+        for (const color of palette) {
+            yield color
+        }
+    }
+}
 
 function CompositeChars(a: ImageBitmap, b: ImageBitmap, compositeOperation: GlobalCompositeOperation) {
     let width = Math.max(a.width, b.width);
@@ -45,15 +64,14 @@ function CompositeChars(a: ImageBitmap, b: ImageBitmap, compositeOperation: Glob
     return canvas.transferToImageBitmap()
 }
 
-semantics.addOperation<ImageBitmap>('bitmap(font)', {
+semantics.addOperation<ImageBitmap>('bitmap(font, colorStrategy)', {
     Entry(e) {
-      color.hsl.h = 0;
-      return e.bitmap(this.args.font)
+      return e.bitmap(...Object.values(this.args))
     },
-    Char_paren(_1, e, _2) { return e.bitmap(this.args.font) },
+    Char_paren(_1, e, _2) { return e.bitmap(...Object.values(this.args)) },
     BinaryOperator_concat(first, _, second) {
-        let a = first.bitmap(this.args.font)
-        let b = second.bitmap(this.args.font)
+        let a = first.bitmap(...Object.values(this.args))
+        let b = second.bitmap(...Object.values(this.args))
 
         let width = a.width + b.width;
         let height = Math.max(a.height, b.height);
@@ -66,19 +84,19 @@ semantics.addOperation<ImageBitmap>('bitmap(font)', {
         return canvas.transferToImageBitmap()
     },
     BinaryOperator_add(a, _, b) { 
-        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "source-over");
+        return CompositeChars(a.bitmap(...Object.values(this.args)), b.bitmap(...Object.values(this.args)), "source-over");
     },
     BinaryOperator_sub(a, _, b) {
-        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "destination-out");
+        return CompositeChars(a.bitmap(...Object.values(this.args)), b.bitmap(...Object.values(this.args)), "destination-out");
     },
     BinaryOperator_and(a, _, b) {
-        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "source-in");
+        return CompositeChars(a.bitmap(...Object.values(this.args)), b.bitmap(...Object.values(this.args)), "source-in");
     },
     BinaryOperator_or(a, _, b) {
-        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "source-over");
+        return CompositeChars(a.bitmap(...Object.values(this.args)), b.bitmap(...Object.values(this.args)), "source-over");
     },
     BinaryOperator_xor(a, _, b) {
-        return CompositeChars(a.bitmap(this.args.font), b.bitmap(this.args.font), "xor");
+        return CompositeChars(a.bitmap(...Object.values(this.args)), b.bitmap(...Object.values(this.args)), "xor");
     },
     Char_literal(_) {
         let canvas = new OffscreenCanvas(100, 100);
@@ -94,9 +112,9 @@ semantics.addOperation<ImageBitmap>('bitmap(font)', {
         ctx = canvas.getContext('2d')! 
     
         ctx.font = this.args.font;
-         ctx.fillStyle = color.to('hsl').toString()
-        color.hsl.h += 70.0
-        color.hsl.h %= 360
+
+        const color: Color = this.args.colorStrategy.next().value
+        ctx.fillStyle = color.to('hsl').toString()
 
         ctx.fillText(this.sourceString, 0, textMetrics.fontBoundingBoxAscent)
     
