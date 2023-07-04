@@ -40,18 +40,6 @@ function ExpressionRenderer(props: {
   );
 }
 
-function Input(props: any) {
-  return (
-    <div class="flex p-0 border-0 border-b-4 text-gray-900 border-indigo-500 dark:text-gray-300 focus-within:border-indigo-400 focus:ring-inset sm:leading-6">
-      <input
-        {...props}
-        type="text"
-        class="block dark:bg-inherit border-0 my-0 w-full focus:ring-0 mx-2 px-1 py-0.5 text-lg border-t dark:border-neutral-600 dark:focus:border-neutral-600 focus:border-gray-300  border-gray-300 justify-center placeholder:text-gray-400"
-      />
-    </div>
-  );
-}
-
 const App = () => {
   const [text, setText] = createSignal(DEFAULT_EXPRESSION);
   const [fontSize, setFontSize] = createSignal(300);
@@ -105,15 +93,17 @@ const App = () => {
           id="inputbox"
           class="sticky p-4 justify-self-stretch order-2 md:order-3"
         >
-          <Input
-            oninput={(e: InputEvent & { currentTarget: HTMLInputElement }) =>
-              setText(e.currentTarget.value)
-            }
-            onfocusout={() => prettyText()}
-            value={text()}
-            name="expression"
-            placeholder="expression"
-          />
+          <div class="flex p-0 border-0 border-b-4 text-gray-900 border-indigo-500 dark:text-gray-300 focus-within:border-indigo-400 focus:ring-inset sm:leading-6">
+            <input
+              oninput={(e) => setText(e.currentTarget.value)}
+              onfocusout={() => prettyText()}
+              value={text()}
+              name="expression"
+              placeholder="expression"
+              type="text"
+              class="block dark:bg-inherit border-0 my-0 w-full focus:ring-0 mx-2 px-1 py-0.5 text-lg border-t dark:border-neutral-600 dark:focus:border-neutral-600 focus:border-gray-300  border-gray-300 justify-center placeholder:text-gray-400"
+            />
+          </div>
         </div>
       </div>
 
