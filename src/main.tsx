@@ -68,7 +68,7 @@ const App = () => {
             </Show>
         </div>
         
-        <div id="inputbox" class="fixed bottom-2 left-2 right-2 ">
+        <div id="inputbox" class="sticky p-2">
             <Input 
                 oninput={(e) => setText(e.currentTarget.value)}
                 value={text()}
