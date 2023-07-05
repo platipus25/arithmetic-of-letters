@@ -1,6 +1,6 @@
 import "./styles.css";
 import { grammar, semantics } from "./parser";
-import { createSignal, createMemo, createEffect, For } from "solid-js";
+import { createSignal, createMemo, createEffect, For, Show } from "solid-js";
 import { render } from "solid-js/web";
 import { MatchResult } from "ohm-js";
 import {
@@ -87,7 +87,7 @@ function ExpressionRenderer(props: {
   colorStrategy: () => ColorStrategy;
   class: string;
 }) {
-  const [renderedImage, setRenderedImage] = createSignal("");
+  const [renderedImage, setRenderedImage] = createSignal("/banner.png");
 
   const font = () => `${props.fontSize} ${props.fontFamily}, sans-serif`;
 
@@ -166,6 +166,9 @@ const App = () => {
         <pre class="text-rose-500 mx-2 order-3 md:order-2">
           {match().message}
         </pre>
+        <Show when={typeof OffscreenCanvas == "undefined"}>
+          <p class="text-rose-500 text-2xl p-4"><code>OffscreenCanvas</code> is required for rendering, please switch to a newer browser</p>
+        </Show>
 
         <div
           id="inputbox"
