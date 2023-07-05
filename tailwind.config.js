@@ -7,7 +7,7 @@ module.exports = {
     },
     extend: {
       gridTemplateRows: {
-        "min-content": "min-content",
+        "min-content": "min-content 1fr min-content",
       },
       gridTemplateColumns: {
         "min-content": "min-content 1fr",

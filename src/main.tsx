@@ -73,7 +73,7 @@ const fonts = [
     name: "Georgia",
   },
   {
-    name: "Times New Roman, Times"
+    name: "Times New Roman, Times",
   },
 ];
 
@@ -137,10 +137,10 @@ const App = () => {
   });
 
   return (
-    <div class="grid relative auto-cols-auto md:grid-flow-col md:grid-cols-min-content dark:bg-neutral-700 grid-rows-min-content">
+    <div class="grid relative auto-cols-auto md:grid-flow-col md:grid-cols-min-content dark:bg-neutral-700 grid-rows-min-content w-screen h-screen">
       <div
         id="headerbox"
-        class="col-span-full left-0 right-0 top-0 p-2 bg-gray-300 dark:bg-neutral-900 max-h-fit"
+        class="col-span-full text-center p-2 bg-gray-300 dark:bg-neutral-900 max-h-fit"
       >
         <h1 class="text-2xl font-display text-black dark:text-gray-300">
           Arithmetic of Letters
@@ -184,12 +184,10 @@ const App = () => {
 
       <div
         id="sidebar"
-        class="md:bg-gray-200 md:dark:bg-neutral-800 col-start-1 md:row-start-2 row-span-1 md:drop-shadow-md dark:text-gray-200"
+        class="md:bg-gray-200 md:dark:bg-neutral-800 col-start-1 md:row-start-2 row-span-2 md:drop-shadow-md dark:text-gray-200"
       >
         <div id="controlsbox" class="grid px-4 py-2 gap-2">
-          <label for="fontsize">
-            Render Quality
-          </label>
+          <label for="fontsize">Render Quality</label>
           <input
             id="fontsize"
             name="fontsize"
@@ -199,9 +197,7 @@ const App = () => {
             oninput={(e) => setFontSize(parseInt(e.currentTarget.value))}
             value={fontSize()}
           />
-          <label for="colorstrategy">
-            Color Palette
-          </label>
+          <label for="colorstrategy">Color Palette</label>
           <select
             name="colorpalette"
             id="colorstrategy"
@@ -218,9 +214,7 @@ const App = () => {
               {(item, i) => <option value={`${i}`}>{item.name}</option>}
             </For>
           </select>
-          <label for="fontfamily">
-            Font Family
-          </label>
+          <label for="fontfamily">Font Family</label>
           <select
             name="fontfamily"
             id="fontfamily"
@@ -262,10 +256,13 @@ any unicode character
           </pre>*/}
         </div>
       </div>
-
-      {/*<div id="footerbox" class="grid h-14 bg-gray-300 md:col-span-2 self-end place-content-center">
+      <div
+        id="footerbox"
+        class="flex py-4 md:col-start-2 self-end gap-4 place-content-center"
+      >
         🫨
-        </div>*/}
+        <a href="https://github.com/platipus25/arithmetic-of-letters" class="text-blue-400 hover:underline hover:text-blue-300">GitHub</a>
+      </div>
     </div>
   );
 };
