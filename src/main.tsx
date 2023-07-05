@@ -59,6 +59,24 @@ const colorStrategies = [
   },
 ];
 
+const fonts = [
+  {
+    name: "Roboto",
+  },
+  {
+    name: "Courier New, Courier",
+  },
+  {
+    name: "Helvetica, Arial",
+  },
+  {
+    name: "Georgia",
+  },
+  {
+    name: "Times New Roman, Times"
+  },
+];
+
 function ExpressionRenderer(props: {
   match: MatchResult;
   fontSize: string;
@@ -79,7 +97,7 @@ function ExpressionRenderer(props: {
     const bitmap = adapter.bitmap(font(), props.colorStrategy());
 
     const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-    canvas.getContext("bitmaprenderer")?.transferFromImageBitmap(bitmap);
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0);
 
     const blob = await canvas.convertToBlob();
 
@@ -97,6 +115,7 @@ function ExpressionRenderer(props: {
 const App = () => {
   const [text, setText] = createSignal(DEFAULT_EXPRESSION);
   const [fontSize, setFontSize] = createSignal(300);
+  const [font, setFont] = createSignal(fonts[0].name);
   const [colorStrategy, setColorStrategy] = createSignal(DefaultColorStrategy);
 
   const match = createMemo(() => grammar.match(text()));
@@ -134,7 +153,7 @@ const App = () => {
       >
         <div id="expressionbox" class="overflow-scroll max-w-full">
           <ExpressionRenderer
-            fontFamily="roboto"
+            fontFamily={font()}
             fontSize={`${fontSize()}px`}
             colorStrategy={colorStrategy()}
             match={match()}
@@ -168,7 +187,7 @@ const App = () => {
         class="md:bg-gray-200 md:dark:bg-neutral-800 col-start-1 md:row-start-2 row-span-1 md:drop-shadow-md dark:text-gray-200"
       >
         <div id="controlsbox" class="grid px-4 py-2 gap-2">
-          <label for="fontsize" class="">
+          <label for="fontsize">
             Render Quality
           </label>
           <input
@@ -180,7 +199,7 @@ const App = () => {
             oninput={(e) => setFontSize(parseInt(e.currentTarget.value))}
             value={fontSize()}
           />
-          <label for="colorstrategy" class="">
+          <label for="colorstrategy">
             Color Palette
           </label>
           <select
@@ -199,9 +218,25 @@ const App = () => {
               {(item, i) => <option value={`${i}`}>{item.name}</option>}
             </For>
           </select>
-          <label for="fontfamily" class="">
-            Font Family (Coming Soon)
+          <label for="fontfamily">
+            Font Family
           </label>
+          <select
+            name="fontfamily"
+            id="fontfamily"
+            class="dark:bg-inherit"
+            oninput={(e) => {
+              const index = e.currentTarget.selectedIndex;
+              const font = fonts[index];
+              if (font != undefined) {
+                setFont(() => font.name);
+              }
+            }}
+          >
+            <For each={fonts}>
+              {(item, i) => <option value={`${i}`}>{item.name}</option>}
+            </For>
+          </select>
         </div>
 
         <div
