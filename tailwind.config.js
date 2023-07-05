@@ -9,6 +9,9 @@ module.exports = {
       gridTemplateRows: {
         "min-content": "min-content",
       },
+      gridTemplateColumns: {
+        "min-content": "min-content 1fr",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],

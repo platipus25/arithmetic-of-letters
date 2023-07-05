@@ -137,7 +137,7 @@ const App = () => {
   });
 
   return (
-    <div class="grid relative auto-cols-auto md:grid-flow-col md:grid-cols-3 dark:bg-neutral-700 grid-rows-min-content">
+    <div class="grid relative auto-cols-auto md:grid-flow-col md:grid-cols-min-content dark:bg-neutral-700 grid-rows-min-content">
       <div
         id="headerbox"
         class="col-span-full left-0 right-0 top-0 p-2 bg-gray-300 dark:bg-neutral-900 max-h-fit"
