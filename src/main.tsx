@@ -264,7 +264,12 @@ any unicode character
         class="flex py-4 md:col-start-2 self-end gap-4 place-content-center"
       >
         🫨
-        <a href="https://github.com/platipus25/arithmetic-of-letters" class="text-blue-400 hover:underline hover:text-blue-300">GitHub</a>
+        <a
+          href="https://github.com/platipus25/arithmetic-of-letters"
+          class="text-blue-400 hover:underline hover:text-blue-300"
+        >
+          GitHub
+        </a>
       </div>
     </div>
   );
