@@ -8,12 +8,13 @@ import {
   DefaultColorStrategy,
   UniformColorStrategy,
   LchWheelStrategy,
+  PaletteStrategy,
   ColorStrategy,
 } from "./colors";
 
 const DEFAULT_EXPRESSION = "A + B || 8 & 0 || G - K";
 
-export const colorStrategies = [
+const colorStrategies = [
   {
     name: "Default",
     strategy: () => {
@@ -40,6 +41,20 @@ export const colorStrategies = [
     name: "Glass",
     strategy: () => {
       return LchWheelStrategy(new Color("lch(60 70 0 / 0.5)"), 95);
+    },
+  },
+  {
+    name: "Pride Flag",
+    strategy: () => {
+      const palette = [
+        new Color("#FF0018"),
+        new Color("#FFA52C"),
+        new Color("#FFFF41"),
+        new Color("#008018"),
+        new Color("#0000F9"),
+        new Color("#86007D"),
+      ];
+      return PaletteStrategy(palette);
     },
   },
 ];

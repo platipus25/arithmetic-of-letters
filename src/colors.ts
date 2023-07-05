@@ -24,7 +24,7 @@ export function* LchWheelStrategy(start: Color, step: number): ColorStrategy {
   }
 }
 
-export function* ColorPaletteStrategy(palette: [Color]): ColorStrategy {
+export function* PaletteStrategy(palette: Color[]): ColorStrategy {
   while (true) {
     for (const color of palette) {
       yield color;
