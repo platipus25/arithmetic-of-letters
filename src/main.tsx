@@ -12,6 +12,9 @@ import {
   ColorStrategy,
 } from "./colors";
 
+// TODO: polyfill OffscreenCanvas
+// TODO: save things in LocalStorage
+
 const DEFAULT_EXPRESSION = "A + B || 8 & 0 || G - K";
 
 const colorStrategies = [
@@ -151,7 +154,7 @@ const App = () => {
         id="displaybox"
         class="grid md:col-span-2 md:col-start-2 grid-flow-row md:grid-rows-3 grid-cols-1 place-items-center"
       >
-        <div id="expressionbox" class="overflow-scroll max-w-full">
+        <div id="expressionbox" class="overflow-x-scroll max-w-full">
           <ExpressionRenderer
             fontFamily={font()}
             fontSize={`${fontSize()}px`}
