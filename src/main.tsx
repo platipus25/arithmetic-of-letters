@@ -182,7 +182,7 @@ const App = () => {
 
       <div
         id="sidebar"
-        class="md:bg-gray-200 md:dark:bg-neutral-800 col-start-1 md:row-start-2 row-span-2 md:drop-shadow-md dark:text-gray-200"
+        class="md:bg-gray-200 md:dark:bg-neutral-800 col-start-1 md:row-start-2 row-span-2 md:drop-shadow-md dark:text-gray-200 md:overflow-y-scroll"
       >
         <div id="controlsbox" class="grid px-4 py-2 gap-2">
           <label for="fontsize">Render Quality</label>
@@ -231,10 +231,7 @@ const App = () => {
           </select>
         </div>
 
-        <div
-          id="infobox"
-          class="flex flex-col gap-2 px-4 py-2 overflow-y-scroll"
-        >
+        <div id="infobox" class="flex flex-col gap-2 px-4 py-2">
           <label for="reference" class="m-1">
             Syntax Reference
           </label>
