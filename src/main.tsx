@@ -99,12 +99,7 @@ function ExpressionRenderer(props: {
     const adapter = semantics(props.match);
     const bitmap = adapter.bitmap(font(), props.colorStrategy());
 
-    const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
-    canvas.getContext("2d")?.drawImage(bitmap, 0, 0);
-
-    const blob = await canvas.convertToBlob();
-
-    const url = URL.createObjectURL(blob);
+    const url = bitmap.toDataURL("image/png");
     setRenderedImage(url);
   });
 
@@ -166,9 +161,6 @@ const App = () => {
         <pre class="text-rose-500 mx-2 order-3 md:order-2">
           {match().message}
         </pre>
-        <Show when={typeof OffscreenCanvas == "undefined"}>
-          <p class="text-rose-500 text-2xl p-4"><code>OffscreenCanvas</code> is required for rendering, please switch to a newer browser</p>
-        </Show>
 
         <div
           id="inputbox"

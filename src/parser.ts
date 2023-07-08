@@ -15,7 +15,7 @@ interface ParserSemantics extends ArithmeticOfLettersSemantics {
 interface ParserAdapter {
   repr: string;
   pretty: string;
-  bitmap(font: string, colorStrategy: ColorStrategy): ImageBitmap;
+  bitmap(font: string, colorStrategy: ColorStrategy): HTMLCanvasElement;
 
   [index: string]: any;
 }
@@ -75,24 +75,26 @@ semantics.addAttribute("pretty", {
 });
 
 function CompositeChars(
-  a: ImageBitmap,
-  b: ImageBitmap,
+  a: HTMLCanvasElement,
+  b: HTMLCanvasElement,
   compositeOperation: GlobalCompositeOperation
-) {
-  let width = Math.max(a.width, b.width);
-  let height = Math.max(a.height, b.height);
+): HTMLCanvasElement {
+  const canvas = document.createElement("canvas");
 
-  const canvas = new OffscreenCanvas(width, height);
+  canvas.width = Math.max(a.width, b.width);
+  canvas.height = Math.max(a.height, b.height);
+
   const ctx = canvas.getContext("2d")!;
 
-  ctx.drawImage(a, 0, 0); // destination
+  // Center vertically
+  ctx.drawImage(a, 0, (canvas.height - a.height) / 2); // destination
   ctx.globalCompositeOperation = compositeOperation;
-  ctx.drawImage(b, 0, 0); // source
+  ctx.drawImage(b, 0, (canvas.height - b.height) / 2); // source
 
-  return canvas.transferToImageBitmap();
+  return canvas;
 }
 
-semantics.addOperation<ImageBitmap>("bitmap(font, colorStrategy)", {
+semantics.addOperation<HTMLCanvasElement>("bitmap(font, colorStrategy)", {
   Entry(e) {
     return e.bitmap(...Object.values(this.args));
   },
@@ -103,15 +105,16 @@ semantics.addOperation<ImageBitmap>("bitmap(font, colorStrategy)", {
     let a = first.bitmap(...Object.values(this.args));
     let b = second.bitmap(...Object.values(this.args));
 
-    let width = a.width + b.width;
-    let height = Math.max(a.height, b.height);
+    const canvas = document.createElement("canvas");
 
-    const canvas = new OffscreenCanvas(width, height);
+    canvas.width = a.width + b.width;
+    canvas.height = Math.max(a.height, b.height);
+
     const ctx = canvas.getContext("2d")!;
-    ctx.drawImage(a, 0, 0);
-    ctx.drawImage(b, a.width, 0);
+    ctx.drawImage(a, 0, (canvas.height - a.height) / 2);
+    ctx.drawImage(b, a.width, (canvas.height - b.height) / 2);
 
-    return canvas.transferToImageBitmap();
+    return canvas;
   },
   BinaryOperator_add(a, _, b) {
     return CompositeChars(
@@ -149,27 +152,25 @@ semantics.addOperation<ImageBitmap>("bitmap(font, colorStrategy)", {
     );
   },
   Char_literal(_) {
-    let canvas = new OffscreenCanvas(100, 100);
-    let ctx = canvas.getContext("2d")!;
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d")!;
 
     ctx.font = this.args.font;
     const textMetrics = ctx.measureText(this.sourceString);
 
-    let width = textMetrics.width;
-    let height =
-      textMetrics.fontBoundingBoxAscent + textMetrics.fontBoundingBoxDescent;
-
-    canvas = new OffscreenCanvas(width, height);
-    ctx = canvas.getContext("2d")!;
+    canvas.width = textMetrics.width;
+    canvas.height =
+      textMetrics.actualBoundingBoxAscent +
+      textMetrics.actualBoundingBoxDescent;
 
     ctx.font = this.args.font;
 
     const color: Color = this.args.colorStrategy.next().value;
     ctx.fillStyle = color.to("hsl").toString();
 
-    ctx.fillText(this.sourceString, 0, textMetrics.fontBoundingBoxAscent);
+    ctx.fillText(this.sourceString, 0, textMetrics.actualBoundingBoxAscent);
 
-    return canvas.transferToImageBitmap();
+    return canvas;
   },
 });
 
