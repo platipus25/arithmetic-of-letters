@@ -86,10 +86,14 @@ function CompositeChars(
 
   const ctx = canvas.getContext("2d")!;
 
+  let centerx = false;
+  let centered_a = centerx ? (canvas.width - a.height) / 2 : 0;
+  let centered_b = centerx ? (canvas.width - b.width) / 2 : 0;
+
   // Center vertically
-  ctx.drawImage(a, 0, (canvas.height - a.height) / 2); // destination
+  ctx.drawImage(a, centered_a, (canvas.height - a.height) / 2); // destination
   ctx.globalCompositeOperation = compositeOperation;
-  ctx.drawImage(b, 0, (canvas.height - b.height) / 2); // source
+  ctx.drawImage(b, centered_b, (canvas.height - b.height) / 2); // source
 
   return canvas;
 }

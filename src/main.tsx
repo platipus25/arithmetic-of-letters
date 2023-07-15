@@ -85,10 +85,10 @@ function ExpressionRenderer(props: {
   fontSize: string;
   fontFamily: string;
   colorStrategy: () => ColorStrategy;
+  renderedImage: string;
+  setRenderedImage: (url: string) => void;
   class: string;
 }) {
-  const [renderedImage, setRenderedImage] = createSignal("/banner.png");
-
   const font = () => `${props.fontSize} ${props.fontFamily}, sans-serif`;
 
   createEffect(async () => {
@@ -100,12 +100,12 @@ function ExpressionRenderer(props: {
     const bitmap = adapter.bitmap(font(), props.colorStrategy());
 
     const url = bitmap.toDataURL("image/png");
-    setRenderedImage(url);
+    props.setRenderedImage(url);
   });
 
   return (
-    <a href={renderedImage()} class="contents" download>
-      <img class={props.class} src={renderedImage()} />
+    <a href={props.renderedImage} class="contents" download>
+      <img class={props.class} src={props.renderedImage} />
     </a>
   );
 }
@@ -115,6 +115,7 @@ const App = () => {
   const [fontSize, setFontSize] = createSignal(300);
   const [font, setFont] = createSignal(fonts[0].name);
   const [colorStrategy, setColorStrategy] = createSignal(DefaultColorStrategy);
+  const [renderedImage, setRenderedImage] = createSignal("/banner.png");
 
   const match = createMemo(() => grammar.match(text()));
 
@@ -155,7 +156,9 @@ const App = () => {
             fontSize={`${fontSize()}px`}
             colorStrategy={colorStrategy()}
             match={match()}
-            class="h-60 justify-self-center hover:drop-shadow m-auto max-w-fit min-w-full"
+            renderedImage={renderedImage()}
+            setRenderedImage={setRenderedImage}
+            class="h-60 justify-self-center hover:drop-shadow m-4 max-w-fit min-w-full"
           />
         </div>
         <pre class="text-rose-500 mx-2 order-3 md:order-2">
@@ -185,6 +188,14 @@ const App = () => {
         class="md:bg-gray-200 md:dark:bg-neutral-800 col-start-1 md:row-start-2 row-span-2 md:drop-shadow-md dark:text-gray-200 md:overflow-y-scroll"
       >
         <div id="controlsbox" class="grid px-4 py-2 gap-2">
+          <a href={renderedImage()} download="download.png" class="contents">
+            <button
+              class="p-2 mt-1 bg-blue-600 rounded-sm active:bg-blue-500 text-white disabled:bg-gray-400 disabled:text-gray-200"
+              disabled={match().failed()}
+            >
+              Download Render
+            </button>
+          </a>
           <label for="fontsize">Render Quality</label>
           <input
             id="fontsize"
