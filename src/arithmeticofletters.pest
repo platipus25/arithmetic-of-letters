@@ -1,0 +1,13 @@
+program =  { SOI ~ expr ~ EOI }
+expr    =  { atom ~ (infix ~ atom)* }
+infix   = _{ concat | add | sub | and | or | xor }
+concat  =  { "||" }
+add     =  { "+" }
+sub     =  { "-" }
+and     =  { "&" }
+or      =  { "|" }
+xor     =  { "^" }
+atom    = _{ "(" ~ expr ~ ")" | char }
+char    =  { ANY }
+
+WHITESPACE = _{ " " | "\t" | NEWLINE }
