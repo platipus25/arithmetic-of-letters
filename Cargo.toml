@@ -7,5 +7,8 @@ edition = "2021"
 
 [dependencies]
 fontdue = "0.7.3"
+lazy_static = "1.4.0"
+palette = "0.7.2"
 pest = "2.7.0"
+pest_derive = "2.7.1"
 tiny-skia = "0.11.1"
