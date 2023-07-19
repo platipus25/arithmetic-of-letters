@@ -1,12 +1,30 @@
-use crate::color::ColorStrategy;
-use fontdue::{Font, Metrics};
+use crate::color::{ColorStrategy, DefaultColorStrategy};
+use fontdue::{Font, FontSettings, Metrics};
 use tiny_skia::{BlendMode, Color, IntSize, Paint, Pixmap, PixmapPaint, Rect, Transform};
+
+lazy_static! {
+    static ref DEFAULT_FONT: Font = Font::from_bytes(
+        include_bytes!("../Roboto-Regular.ttf") as &[u8],
+        FontSettings::default()
+    )
+    .unwrap();
+}
 
 #[derive(Clone)]
 pub struct RenderOptions {
     pub font: Font,
     pub font_size: f32,
     pub color_strategy: fn() -> ColorStrategy,
+}
+
+impl Default for RenderOptions {
+    fn default() -> Self {
+        RenderOptions {
+            font: DEFAULT_FONT.clone(),
+            font_size: 120.0,
+            color_strategy: || Box::new(DefaultColorStrategy::new()),
+        }
+    }
 }
 
 pub fn composite(lhs: Pixmap, rhs: Pixmap, mode: BlendMode, _options: &RenderOptions) -> Pixmap {
@@ -27,14 +45,7 @@ pub fn composite(lhs: Pixmap, rhs: Pixmap, mode: BlendMode, _options: &RenderOpt
         ..Default::default()
     };
 
-    canvas.draw_pixmap(
-        0,
-        0,
-        rhs.as_ref(),
-        &paint,
-        Transform::identity(),
-        None,
-    );
+    canvas.draw_pixmap(0, 0, rhs.as_ref(), &paint, Transform::identity(), None);
 
     canvas
 }
@@ -77,13 +88,9 @@ pub fn render_char(
 
     let (metrics, char_bitmap) = rasterize_char(first_char, options);
 
-    let mut canvas = Pixmap::new(
-        metrics.advance_width as u32,
-        options.font_size as u32,
-    )
-    .unwrap();
+    let mut canvas = Pixmap::new(metrics.advance_width as u32, options.font_size as u32).unwrap();
 
-    let transform = Transform::identity();//Transform::from_translate(metrics.bounds.xmin, -metrics.bounds.ymin);
+    let transform = Transform::identity(); //Transform::from_translate(metrics.bounds.xmin, -metrics.bounds.ymin);
 
     canvas.draw_pixmap(
         0,

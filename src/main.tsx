@@ -15,6 +15,8 @@ import {
 // TODO: polyfill OffscreenCanvas
 // TODO: save things in LocalStorage
 
+import * as arithmeticofletters from "../pkg"
+
 const DEFAULT_EXPRESSION = "A + B || 8 & 0 || G - K";
 
 const colorStrategies = [
@@ -96,11 +98,24 @@ function ExpressionRenderer(props: {
       return;
     }
 
+    console.log(arithmeticofletters, )
+    try {
+      const bitmap = arithmeticofletters.parse_wasm(props.match.input);
+
+      let blob = new Blob([bitmap], {type:"image/png"})
+      const url = URL.createObjectURL(blob);
+      props.setRenderedImage(url);
+
+      console.log(bitmap, blob)
+    } catch (err) {
+      console.error(err)
+    }
+
     const adapter = semantics(props.match);
     const bitmap = adapter.bitmap(font(), props.colorStrategy());
 
     const url = bitmap.toDataURL("image/png");
-    props.setRenderedImage(url);
+    //props.setRenderedImage(url);
   });
 
   return (
@@ -278,12 +293,10 @@ any unicode character
   );
 };
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const fontFace = new FontFace(
-    "roboto",
-    `url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2)`
-  );
-  document.fonts.add(await fontFace.load());
+const fontFace = new FontFace(
+  "roboto",
+  `url(https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2)`
+);
+document.fonts.add(await fontFace.load());
 
-  render(() => <App />, document.getElementById("app")!);
-});
+render(() => <App />, document.getElementById("app")!);

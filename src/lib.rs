@@ -10,3 +10,5 @@ mod render;
 
 pub use parse::{parse, polish, pretty};
 pub use render::RenderOptions;
+
+pub mod wasm;
