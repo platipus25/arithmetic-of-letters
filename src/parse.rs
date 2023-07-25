@@ -104,11 +104,11 @@ pub fn render(
         })
         .map_infix(|lhs, op, rhs| match op.as_rule() {
             Rule::add => composite(lhs, rhs, BlendMode::SourceOver, options),
-            Rule::sub => composite(lhs, rhs, BlendMode::SourceOver, options),
-            Rule::and => composite(lhs, rhs, BlendMode::SourceOver, options),
+            Rule::sub => composite(lhs, rhs, BlendMode::DestinationOut, options),
+            Rule::and => composite(lhs, rhs, BlendMode::SourceIn, options),
             Rule::or => composite(lhs, rhs, BlendMode::SourceOver, options),
-            Rule::xor => composite(lhs, rhs, BlendMode::SourceOver, options),
-            Rule::concat => concat(lhs, rhs, BlendMode::SourceOver, options),
+            Rule::xor => composite(lhs, rhs, BlendMode::Xor, options),
+            Rule::concat => concat(lhs, rhs, options),
             _ => unreachable!(),
         })
         .parse(pairs)

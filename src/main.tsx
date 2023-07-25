@@ -84,14 +84,14 @@ const fonts = [
 
 function ExpressionRenderer(props: {
   match: MatchResult;
-  fontSize: string;
+  fontSize: number;
   fontFamily: string;
   colorStrategy: () => ColorStrategy;
   renderedImage: string;
   setRenderedImage: (url: string) => void;
   class: string;
 }) {
-  const font = () => `${props.fontSize} ${props.fontFamily}, sans-serif`;
+  const font = () => `${props.fontSize}px ${props.fontFamily}, sans-serif`;
 
   createEffect(async () => {
     if (props.match.failed()) {
@@ -100,7 +100,7 @@ function ExpressionRenderer(props: {
 
     console.log(arithmeticofletters, )
     try {
-      const bitmap = arithmeticofletters.parse_wasm(props.match.input);
+      const bitmap = arithmeticofletters.parse_wasm(props.match.input, props.fontSize);
 
       let blob = new Blob([bitmap], {type:"image/png"})
       const url = URL.createObjectURL(blob);
@@ -168,7 +168,7 @@ const App = () => {
         <div id="expressionbox" class="overflow-x-scroll max-w-full">
           <ExpressionRenderer
             fontFamily={font()}
-            fontSize={`${fontSize()}px`}
+            fontSize={fontSize()}
             colorStrategy={colorStrategy()}
             match={match()}
             renderedImage={renderedImage()}

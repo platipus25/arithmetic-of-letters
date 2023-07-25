@@ -14,28 +14,28 @@ pub fn greet() {
 }
 
 #[wasm_bindgen]
-pub fn parse_wasm(program: &str) -> Result<Uint8Array, String> {
+pub fn parse_wasm(program: &str, font_size: f32) -> Result<Uint8Array, String> {
     let options = RenderOptions {
-        font_size: 300.0,
+        font_size,
         ..Default::default()
     };
 
-    let result = parse(program, &options)
-        .map(|pixmap| pixmap.encode_png().expect("Error encoding png"))
-        .map_err(|err| err.to_string())
-        .map(|png| {
-            let mut properties = BlobPropertyBag::new();
-            properties.type_("image/png");
+    let pixmap = parse(program, &options).map_err(|err| err.to_string())?;
 
-            let array = Uint8Array::new_with_length(png.len().try_into().unwrap());
-            array.copy_from(&png);
+    let png = pixmap.encode_png().expect("Error encoding png");
+        
+    let mut properties = BlobPropertyBag::new();
+    properties.type_("image/png");
 
-            /*Blob::new_with_u8_array_sequence_and_options(
-                &array,
-                &properties,
-            ).expect("Error making blob")*/
-            array
-        });
+    let array = Uint8Array::new_with_length(png.len().try_into().unwrap());
+    array.copy_from(&png);
 
-    result
+    let blob = Blob::new_with_u8_array_sequence_and_options(
+        &array,
+        &properties,
+    ).expect("Error making blob");
+
+    println!("Blob is {:?}", blob);
+
+    Ok(array)
 }

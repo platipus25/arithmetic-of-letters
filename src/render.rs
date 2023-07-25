@@ -50,7 +50,7 @@ pub fn composite(lhs: Pixmap, rhs: Pixmap, mode: BlendMode, _options: &RenderOpt
     canvas
 }
 
-pub fn concat(lhs: Pixmap, rhs: Pixmap, mode: BlendMode, _options: &RenderOptions) -> Pixmap {
+pub fn concat(lhs: Pixmap, rhs: Pixmap, _options: &RenderOptions) -> Pixmap {
     let mut canvas = Pixmap::new(lhs.width() + rhs.width(), lhs.height().max(rhs.width())).unwrap();
 
     canvas.draw_pixmap(
@@ -62,16 +62,11 @@ pub fn concat(lhs: Pixmap, rhs: Pixmap, mode: BlendMode, _options: &RenderOption
         None,
     );
 
-    let paint = PixmapPaint {
-        blend_mode: mode,
-        ..Default::default()
-    };
-
     canvas.draw_pixmap(
         lhs.width().try_into().unwrap(),
         0,
         rhs.as_ref(),
-        &paint,
+        &PixmapPaint::default(),
         Transform::identity(),
         None,
     );
@@ -104,8 +99,6 @@ pub fn render_char(
     let color = color_strategy.next().unwrap();
     let color = Color::from_rgba(color.red, color.green, color.blue, color.alpha).unwrap();
 
-    //paint.set_color(color);
-
     let mut paint = Paint::default();
     paint.set_color(color);
     paint.blend_mode = BlendMode::SourceIn;
@@ -132,12 +125,12 @@ fn rasterize_char(text: char, options: &RenderOptions) -> (Metrics, Pixmap) {
                 chunk[0],
                 chunk[1],
                 chunk[2],
-                chunk[0].min(chunk[1]).min(chunk[2]),
+                chunk[0].max(chunk[1]).max(chunk[2]),
             ]
         })
         .collect::<Vec<u8>>();
 
-    println!("{} {:?}", text, metrics);
+    //println!("{} {:?}", text, metrics);
     assert_eq!(rgba_bitmap.len(), metrics.width * metrics.height * 4);
 
     let size: IntSize = IntSize::from_wh(
